@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  elasticsearch:
+    image: sebp/elk:latest
+    container_name: elasticsearch
+    volumes:
+      - elasticsearch_data:/var/lib/elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+  logstash:
+    image: sebp/elk:latest
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/etc/logstash/conf.d/logstash.conf
+      - logstash_data:/var/lib/logstash
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5000:5000"
+      - "9600:9600"
+  kibana:
+    image: sebp/elk:latest
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+volumes:
+  elasticsearch_data:
+  logstash_data:
